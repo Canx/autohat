@@ -1,0 +1,29 @@
+# Autohat
+Script de selenium para automatizar la puesta de 'gorritos' de cada clase.
+
+## Prerequisitos
+- Descarga la última versión de [Selenium server standalone](http://www.seleniumhq.org/download/) y ejecútala:
+
+```
+$ java -jar selenium-server-standalone-3.4.0.jar
+```
+
+- Instala la última versión de [Chrome Driver](https://sites.google.com/a/chromium.org/chromedriver/downloads)
+
+- Instala [composer](https://getcomposer.org/download/)
+
+- Instala las dependencias ejecutando:
+
+```
+php composer.phar install
+```
+
+## Utilización
+
+Ejecuta el script con el usuario y contraseña:
+
+```
+$ autohat.php <usuario> <contraseña>
+```
+
+Profit!
