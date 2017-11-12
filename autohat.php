@@ -1,20 +1,44 @@
-#!/usr/bin/php
+#!/usr/bin/env php
 <?php
 
-require_once('vendor/autoload.php');
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 use Facebook\WebDriver\WebDriverBy;
 
+use GetOpt\GetOpt;
+use GetOpt\Option;
+use GetOpt\Command;
+use GetOpt\ArgumentException;
+use GetOpt\ArgumentException\Missing;
 
-if ($argc != 3) {
-    exit("Debes pasar el usuario y contraseña de Itaca como parámetros!\n");
+require_once __DIR__ . '/vendor/autoload.php';
+
+$getOpt = new GetOpt();
+
+$getOpt->addOptions([
+	['h','headless', GetOpt::NO_ARGUMENT, "Ejecutar sin chrome visible"],
+	['u','user', GetOpt::REQUIRED_ARGUMENT, "Usuario de Itaca"],
+	['p','password', GetOpt::REQUIRED_ARGUMENT, "Contraseña de Itaca"]
+    ]);
+
+try {
+    $getOpt->process();
+} catch (Exception $exception) {
+    print PHP_EOL . $getOpt->getHelpText();
+    exit;
 }
 
-$user = $argv[1];
-$password = $argv[2];
+$user = $getOpt['user'];
+$password = $getOpt['password'];
+$headless = $getOpt['headless'];
+
+if ($user == NULL or $password == NULL) {
+    print PHP_EOL . "Error: Debes pasar el usuario y contraseña de Itaca como parámetros!" . PHP_EOL;
+    print PHP_EOL . $getOpt->getHelpText();
+    exit;
+}
 
 $browser_type = 'chrome';
 $host = 'http://localhost:4444/wd/hub';
@@ -24,8 +48,9 @@ $capabilities = DesiredCapabilities::chrome(array("browserName" => $browser_type
 
 $options = new ChromeOptions();
 
-// TODO: add headless when parameters passed
-//$options->addArguments(["--headless"]);
+if ($headless) { 
+    $options->addArguments(["--headless"]);
+}
 $options->addArguments(["--disable-gpu","start-maximized"]);
 
 $capabilities->setCapability(ChromeOptions::CAPABILITY, $options);
