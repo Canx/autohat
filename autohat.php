@@ -3,6 +3,8 @@
 
 require_once('vendor/autoload.php');
 use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Facebook\WebDriver\Remote\DesiredCapabilities;
+use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 use Facebook\WebDriver\WebDriverBy;
 
@@ -17,7 +19,18 @@ $password = $argv[2];
 $browser_type = 'chrome';
 $host = 'http://localhost:4444/wd/hub';
 
-$capabilities = array("browserName" => $browser_type);
+// testing
+$capabilities = DesiredCapabilities::chrome(array("browserName" => $browser_type));
+
+$options = new ChromeOptions();
+
+// TODO: add headless when parameters passed
+//$options->addArguments(["--headless"]);
+$options->addArguments(["--disable-gpu","start-maximized"]);
+
+$capabilities->setCapability(ChromeOptions::CAPABILITY, $options);
+
+//$capabilities = array("browserName" => $browser_type);
 try {
   $driver = RemoteWebDriver::create($host, $capabilities);
 }
