@@ -2,6 +2,9 @@
 Script de selenium para automatizar la puesta de 'gorritos' de cada clase.
 
 ## Prerequisitos
+
+- Instala Google Chrome
+
 - Descarga la última versión de [Selenium server standalone](http://www.seleniumhq.org/download/) y ejecútala:
 
 ```
@@ -18,9 +21,11 @@ $ java -jar selenium-server-standalone-3.4.0.jar
 php composer.phar install
 ```
 
+Alternativamente ejecuta o sigue los pasos de `install.sh`.
+
 ## Utilización
 
-Ejecuta el script con el usuario y contraseña:
+Ejecuta el script con el usuario y contraseña de Itaca:
 
 ```
 $ autohat.php <usuario> <contraseña>
