@@ -28,7 +28,9 @@ Alternativamente ejecuta o sigue los pasos de `install.sh`.
 Ejecuta el script con el usuario y contraseña de Itaca:
 
 ```
-$ autohat.php <usuario> <contraseña>
+$ autohat.php [-h] -u <usuario> -p <contraseña>
 ```
+
+La opción -h permite ejecutar el script en modo `headless`
 
 Profit!
