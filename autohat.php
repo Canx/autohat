@@ -143,6 +143,7 @@ for($num_sesion = 0; $num_sesion < $num_sesiones; $num_sesion++) {
 		   try {
                        $div_claseimpartida->click();
                        $mensaje = "Click realizado!";
+		       sleep(2);
 	           }
 	           catch(Expection $e) {
                        print "Excepción haciendo click en gorrito!\n";	
