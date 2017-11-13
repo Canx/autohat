@@ -40,6 +40,9 @@ if ($user == NULL or $password == NULL) {
     exit;
 }
 
+// kill any potential selenium server
+shell_exec("kill $(ps h -C 'java -jar " . __DIR__ . "/selenium-server-standalone-3.7.1.jar' | awk '{print $1}')");
+
 // TODO: check if selenium is not currently running
 $selenium_output = shell_exec('java -jar ' . __DIR__ . '/selenium-server-standalone-3.7.1.jar > /dev/null 2>&1 &');
 sleep(2);
@@ -190,3 +193,6 @@ $boton_desconectar->click();
 sleep(1);
 $boton_aceptar = $driver->findElement(WebDriverBy::className("imc-bt-accepta"));
 $boton_aceptar->click();
+
+// kill selenium
+shell_exec("kill $(ps h -C 'java -jar " . __DIR__ . "/selenium-server-standalone-3.7.1.jar' | awk '{print $1}')");
