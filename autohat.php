@@ -40,6 +40,11 @@ if ($user == NULL or $password == NULL) {
     exit;
 }
 
+// TODO: check if selenium is not currently running
+$selenium_output = shell_exec('java -jar ' . __DIR__ . '/selenium-server-standalone-3.7.1.jar > /dev/null 2>&1 &');
+sleep(2);
+
+
 $browser_type = 'chrome';
 $host = 'http://localhost:4444/wd/hub';
 
@@ -60,7 +65,7 @@ try {
   $driver = RemoteWebDriver::create($host, $capabilities);
 }
 catch(Exception $e) {
-   print PHP_EOL . "Error: selenium standalone server no está ejecutandose!";
+   print PHP_EOL . "Error: selenium standalone server no está ejecutandose.";
    exit;
 }
 
@@ -70,7 +75,8 @@ try {
 	  WebDriverExpectedCondition::urlIs('https://acces.edu.gva.es/sso/login.xhtml?callbackUrl=https://docent.edu.gva.es/md-front/www/')
     );
 } catch(Exception $e) {
-   exit("Error: no se pudo cargar la web de Itaca.");
+   print PHP_EOL . "Error: no se pudo cargar la web de Itaca." . PHP_EOL;
+   exit;
 }
 
 $username_box = $driver->findElement(WebDriverBy::id('j_username'));
@@ -84,9 +90,17 @@ $driver->getKeyboard()->sendKeys($password);
 $button = $driver->findElement(WebDriverBy::name('j_id42'));
 $button->click();
 
-$driver->wait(20, 1000)->until(
+// TODO: add exception about user/password incorrect
+try {
+    $driver->wait(20, 1000)->until(
 	  WebDriverExpectedCondition::urlIs('https://docent.edu.gva.es/md-front/www/?lang=es#moduldocent/centres')
-  );
+      );
+}
+catch(Exception $e) {
+    print "Error: usuario y/o contraseña incorrectos.";
+    exit;
+}
+
 $driver->wait(20,1000)->until(
    function () use ($driver) {
       $elements = $driver->findElements(WebDriverBy::className('imc-centre-horari'));
