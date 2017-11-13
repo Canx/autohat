@@ -60,14 +60,18 @@ try {
   $driver = RemoteWebDriver::create($host, $capabilities);
 }
 catch(Exception $e) {
-   exit("Error: selenium standalone server no está ejecutandose!\n");
+   print PHP_EOL . "Error: selenium standalone server no está ejecutandose!";
+   exit;
 }
 
-$driver->get("https://docent.edu.gva.es");
-
-$driver->wait(20, 1000)->until(
+try {
+    $driver->get("https://docent.edu.gva.es");
+    $driver->wait(20, 1000)->until(
 	  WebDriverExpectedCondition::urlIs('https://acces.edu.gva.es/sso/login.xhtml?callbackUrl=https://docent.edu.gva.es/md-front/www/')
-  );
+    );
+} catch(Exception $e) {
+   exit("Error: no se pudo cargar la web de Itaca.");
+}
 
 $username_box = $driver->findElement(WebDriverBy::id('j_username'));
 $username_box->click();
