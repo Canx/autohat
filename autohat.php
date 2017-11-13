@@ -41,9 +41,10 @@ if ($user == NULL or $password == NULL) {
 }
 
 // kill any potential selenium server
-shell_exec("kill $(ps h -C 'java -jar " . __DIR__ . "/selenium-server-standalone-3.7.1.jar' | awk '{print $1}')");
+print "matando proceso selenium...";
+shell_exec("kill $(ps h -C 'java -jar " . __DIR__ . "/selenium-server-standalone-3.7.1.jar' | awk '{print $1}') > /dev/null 2>&1");
 
-// TODO: check if selenium is not currently running
+print PHP_EOL . "arrancando selenium...";
 $selenium_output = shell_exec('java -jar ' . __DIR__ . '/selenium-server-standalone-3.7.1.jar > /dev/null 2>&1 &');
 sleep(2);
 
@@ -72,6 +73,7 @@ catch(Exception $e) {
    exit;
 }
 
+print PHP_EOL . "haciendo login...";
 try {
     $driver->get("https://docent.edu.gva.es");
     $driver->wait(20, 1000)->until(
@@ -114,6 +116,8 @@ $driver->wait(20,1000)->until(
 $driver->wait(20,1000)->until(
 	WebDriverExpectedCondition::visibilityOfElementLocated(WebDriverBy::className('imc-centre-horari')));
 
+
+print PHP_EOL . "accediendo a sesiones...";
 $enlace_sesiones = $driver->findElement(WebDriverBy::className('imc-centre-horari'));
 $enlace_sesiones->click();
 sleep(2);
@@ -124,7 +128,7 @@ $driver->wait(10, 1000)->until(
 $sesiones = $driver->findElements(WebDriverBy::cssSelector("li.imc-horari-dia:first-of-type > ul > li"));
 
 $num_sesiones = count($sesiones);
-print "sesiones: {$num_sesiones}\n";
+print PHP_EOL . "sesiones del día: {$num_sesiones}";
 
 for($num_sesion = 0; $num_sesion < $num_sesiones; $num_sesion++) {
    sleep(1);
@@ -162,7 +166,7 @@ for($num_sesion = 0; $num_sesion < $num_sesiones; $num_sesion++) {
                        $mensaje = "Click realizado!";
 		       sleep(2);
 	           }
-	           catch(Expection $e) {
+	           catch(Exception $e) {
                        print "Excepción haciendo click en gorrito!\n";	
 	           }
 	       }
@@ -178,7 +182,7 @@ for($num_sesion = 0; $num_sesion < $num_sesiones; $num_sesion++) {
            $mensaje = "no se ha encontrado checkbox de clase impartida en el curso";
        }
 
-       print "Grupo {$grupomateria}: {$mensaje}\n";
+       print PHP_EOL . "Grupo {$grupomateria}: {$mensaje}";
 
        // Al acabar volvemos atrás
        $volver = $driver->findElement(WebDriverBy::cssSelector(".imc-torna > a"));
@@ -188,6 +192,7 @@ for($num_sesion = 0; $num_sesion < $num_sesiones; $num_sesion++) {
 }
 
 // Desconectamos
+print  PHP_EOL . "desconectando..."; 
 $boton_desconectar = $driver->findElement(WebDriverBy::className("imc-marc-bt-desconecta"));
 $boton_desconectar->click();
 sleep(1);
@@ -195,4 +200,5 @@ $boton_aceptar = $driver->findElement(WebDriverBy::className("imc-bt-accepta"));
 $boton_aceptar->click();
 
 // kill selenium
+print PHP_EOL . "cerrando selenium..." . PHP_EOL;
 shell_exec("kill $(ps h -C 'java -jar " . __DIR__ . "/selenium-server-standalone-3.7.1.jar' | awk '{print $1}')");
