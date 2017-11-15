@@ -1,9 +1,13 @@
+# 0. Install php
+sudo apt-get update
+sudo apt-get -y install php7.0-cli php7.0-curl php7.0-zip
+
 # 1. Install chrome
 
 wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - 
 sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
 sudo apt-get update
-sudo apt-get install google-chrome-stable
+sudo apt-get -y install google-chrome-stable
 
 # 1. Install chrome driver
 
