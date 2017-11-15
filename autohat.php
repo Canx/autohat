@@ -1,6 +1,11 @@
 #!/usr/bin/env php
 <?php
 
+/* Autohat - herramienta para ayudar a poner "gorritos" en Itaca
+ *
+ * @autor   Ruben Cancho <canchete@gmail.com>
+ */
+
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Chrome\ChromeOptions;
