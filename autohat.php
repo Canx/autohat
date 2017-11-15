@@ -16,10 +16,25 @@ use GetOpt\ArgumentException\Missing;
 require_once __DIR__ . '/vendor/autoload.php';
 
 
-function autohat($user, $password, $headless) {
-    //$user = $getOpt['user'];
-    //$password = $getOpt['password'];
-    //$headless = $getOpt['headless'];
+function autohat() {
+    $getOpt = new GetOpt();
+    
+    $getOpt->addOptions([
+    	['h','headless', GetOpt::NO_ARGUMENT, "Ejecutar sin chrome visible"],
+    	['u','user', GetOpt::REQUIRED_ARGUMENT, "Usuario de Itaca"],
+    	['p','password', GetOpt::REQUIRED_ARGUMENT, "Contraseña de Itaca"]
+        ]);
+    
+    try {
+        $getOpt->process();
+    } catch (Exception $exception) {
+        print PHP_EOL . $getOpt->getHelpText();
+        exit(1);
+    }
+
+    $user = $getOpt['user'];
+    $password = $getOpt['password'];
+    $headless = $getOpt['headless'];
     
     if ($user == NULL or $password == NULL) {
         print PHP_EOL . "Error: Debes pasar el usuario y contraseña de Itaca como parámetros!" . PHP_EOL;
@@ -190,31 +205,17 @@ function autohat($user, $password, $headless) {
 }
 
 ///// MAIN
-$getOpt = new GetOpt();
-
-$getOpt->addOptions([
-	['h','headless', GetOpt::NO_ARGUMENT, "Ejecutar sin chrome visible"],
-	['u','user', GetOpt::REQUIRED_ARGUMENT, "Usuario de Itaca"],
-	['p','password', GetOpt::REQUIRED_ARGUMENT, "Contraseña de Itaca"]
-    ]);
-
-try {
-    $getOpt->process();
-} catch (Exception $exception) {
-    print PHP_EOL . $getOpt->getHelpText();
-    exit;
-}
-
-
 $retry = false;
+$time = 60;
 do
     try {
-        autohat($getOpt['user'], $getOpt['password'], $getOpt['headless']);
+        autohat();
     } 
     catch(Exception $e) {
         print PHP_EOL . "Error:" . $e->getMessage();
-        print PHP_EOL . "Reintentando en 60 segundos...";
-        sleep(60);
+        print PHP_EOL . "Reintentando en {$time} segundos...";
+        sleep($time);
+        $time = $time*2;   
         $retry = true;
     }
 while($retry);
