@@ -13,6 +13,8 @@ Ejecuta el script con el usuario y contraseña de Itaca:
 $ autohat.php [-h] -u <usuario> -p <contraseña>
 ```
 
+o añade el usuario y contraseña en el archivo `config.ini`
+
 La opción -h permite ejecutar el script en modo `headless`
 
 Profit!
