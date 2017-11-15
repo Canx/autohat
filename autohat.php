@@ -37,6 +37,11 @@ function autohat() {
     $headless = $getOpt['headless'];
     
     if ($user == NULL or $password == NULL) {
+       $config = parse_ini_file('config.ini');
+       $user = $config['user'];
+       $password = $config['password'];
+    }
+    if ($user == NULL or $password == NULL) {
         print PHP_EOL . "Error: Debes pasar el usuario y contraseña de Itaca como parámetros!" . PHP_EOL;
         print PHP_EOL . $getOpt->getHelpText();
         exit;
