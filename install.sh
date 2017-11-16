@@ -12,8 +12,8 @@ sudo apt-get -y install google-chrome-stable
 # 1. Install chrome driver
 sudo apt-get install -y bsdtar
 
-curl http://chromedriver.storage.googleapis.com/2.33/chromedriver_linux64.zip | sudo bsdtar -xvf - -C /usr/local/bin
-sudo chmod +x /usr/local/bin/chromedriver
+curl http://chromedriver.storage.googleapis.com/2.33/chromedriver_linux64.zip | bsdtar -xvf -
+chmod +x chromedriver
 
 # 2. Download selenium
 
