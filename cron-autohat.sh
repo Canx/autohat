@@ -3,4 +3,4 @@
 #
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 export PATH=/usr/bin/:/bin/:$DIR
-autohat.php $@ >> $DIR/autohat.log
+autohat.php -h $@ >> $DIR/autohat.log
