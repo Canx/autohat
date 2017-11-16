@@ -21,8 +21,10 @@ La opción -h permite ejecutar el script en modo `headless`
 
 Si quieres utilizar autohat.php en cron utiliza mejor el script `cron-autohat.sh`:
 
-`0 8 * * *  /rutacompleta/cron-autohat.sh -u <user> -p <password>`
+`0 8 * * *  /rutacompleta/cron-autohat.sh`
 
-y mira los registros en el archivo `autohat.log`
+y añade el usuario y contraseña en el archivo `config.ini`.
+
+Mira los registros de funcionamiento en el archivo `autohat.log`.
 
 Profit!
