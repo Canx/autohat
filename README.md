@@ -3,6 +3,8 @@ Script de selenium para automatizar la puesta de 'gorritos' de cada clase.
 
 ## Prerequisitos
 
+Se recomienda utilizar Ubuntu 14.04 o superior.
+
 Ejecuta o sigue los pasos de `install.sh`.
 
 ## Utilización
