@@ -21,6 +21,10 @@ use GetOpt\ArgumentException\Missing;
 require_once __DIR__ . '/vendor/autoload.php';
 
 
+function myprint($message) {
+   print date('Y/m/d H:m:s') . " > " . $message . PHP_EOL;
+}
+
 function autohat() {
     $getOpt = new GetOpt();
     
@@ -33,7 +37,7 @@ function autohat() {
     try {
         $getOpt->process();
     } catch (Exception $exception) {
-        print PHP_EOL . $getOpt->getHelpText();
+        print $getOpt->getHelpText() . PHP_EOL;
         exit(1);
     }
 
@@ -47,19 +51,24 @@ function autohat() {
        $password = $config['password'];
     }
     if ($user == NULL or $password == NULL) {
-        print PHP_EOL . "Error: Debes pasar el usuario y contraseña de Itaca como parámetros!" . PHP_EOL;
-        print PHP_EOL . $getOpt->getHelpText();
+        print "Error: Debes pasar el usuario y contraseña de Itaca como parámetros!" . PHP_EOL;
+        print $getOpt->getHelpText();
         exit;
     }
     
-    // kill any potential selenium server
-    print PHP_EOL . "matando proceso selenium...";
-    shell_exec("kill $(ps h -C 'java -jar " . __DIR__ . "/selenium-server-standalone-3.7.1.jar' | awk '{print $1}') > /dev/null 2>&1");
-    
-    print PHP_EOL . "arrancando selenium...";
-    $selenium_output = shell_exec('java -jar ' . __DIR__ . '/selenium-server-standalone-3.7.1.jar > /dev/null 2>&1 &');
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, "http://localhost:4444/wd/hub/status");
+    $result = curl_exec($ch);
+    curl_close($ch);
+    if ( $result != false ) {
+         // kill any selenium instance running.
+        myprint("killing selenium...");
+        shell_exec("lsof -t -i :4444 | xargs kill");
+    }
+
+    myprint("starting selenium...");
+    $pid = exec('java -jar ' . __DIR__ . '/selenium-server-standalone-3.7.1.jar > /dev/null 2>&1 & echo $! &');
     sleep(2);
-    
     
     $browser_type = 'chrome';
     $host = 'http://localhost:4444/wd/hub';
@@ -81,11 +90,12 @@ function autohat() {
       $driver = RemoteWebDriver::create($host, $capabilities);
     }
     catch(Exception $e) {
-       print PHP_EOL . "Error: selenium standalone server no está ejecutandose.";
+       //myprint $e->getMessage();
+       myprint("Error: selenium standalone server no está ejecutandose.");
        exit;
     }
     
-    print PHP_EOL . "haciendo login...";
+    myprint("haciendo login...");
     try {
         $driver->get("https://docent.edu.gva.es");
         $driver->wait(20, 1000)->until(
@@ -127,7 +137,7 @@ function autohat() {
     	WebDriverExpectedCondition::visibilityOfElementLocated(WebDriverBy::className('imc-centre-horari')));
     
     
-    print PHP_EOL . "accediendo a sesiones...";
+    myprint("accediendo a sesiones...");
     $enlace_sesiones = $driver->findElement(WebDriverBy::className('imc-centre-horari'));
     $enlace_sesiones->click();
     sleep(2);
@@ -138,7 +148,7 @@ function autohat() {
     $sesiones = $driver->findElements(WebDriverBy::cssSelector("li.imc-horari-dia:first-of-type > ul > li"));
     
     $num_sesiones = count($sesiones);
-    print PHP_EOL . "sesiones del día: {$num_sesiones}";
+    myprint("sesiones del día: {$num_sesiones}");
     
     for($num_sesion = 0; $num_sesion < $num_sesiones; $num_sesion++) {
        sleep(1);
@@ -192,7 +202,7 @@ function autohat() {
                $mensaje = "no se ha encontrado checkbox de clase impartida en el curso";
            }
     
-           print PHP_EOL . "Grupo {$grupomateria}: {$mensaje}";
+           myprint("Grupo {$grupomateria}: {$mensaje}");
     
            // Al acabar volvemos atrás
            $volver = $driver->findElement(WebDriverBy::cssSelector(".imc-torna > a"));
@@ -202,16 +212,16 @@ function autohat() {
     }
     
     // Desconectamos
-    print  PHP_EOL . "desconectando..."; 
+    myprint("desconectando..."); 
     $boton_desconectar = $driver->findElement(WebDriverBy::className("imc-marc-bt-desconecta"));
     $boton_desconectar->click();
     sleep(1);
     $boton_aceptar = $driver->findElement(WebDriverBy::className("imc-bt-accepta"));
     $boton_aceptar->click();
     
-    // kill selenium
-    print PHP_EOL . "cerrando selenium..." . PHP_EOL;
-    shell_exec("kill $(ps h -C 'java -jar " . __DIR__ . "/selenium-server-standalone-3.7.1.jar' | awk '{print $1}')");
+    myprint("parando selenium...");
+    //shell_exec("lsof -t -i :4444 | xargs kill > /dev/null 2>&1");
+    shell_exec("kill -9 {$pid} &");
 }
 
 ///// MAIN
@@ -220,10 +230,11 @@ $time = 60;
 do
     try {
         autohat();
+        $retry = false;
     } 
     catch(Exception $e) {
-        print PHP_EOL . "Error:" . $e->getMessage();
-        print PHP_EOL . "Reintentando en {$time} segundos...";
+        myprint("Error:" . $e->getMessage());
+        myprint("Reintentando en {$time} segundos...");
         sleep($time);
         $time = $time*2;   
         $retry = true;
