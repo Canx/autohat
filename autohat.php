@@ -237,6 +237,7 @@ do
         myprint("Reintentando en {$time} segundos...");
         sleep($time);
         $time = $time*2;   
+        $time = min($time, 3600);
         $retry = true;
     }
 while($retry);
