@@ -23,7 +23,7 @@ También puedes añadir el usuario y contraseña en el archivo `config.ini`
 
 Si quieres utilizar autohat.php en cron utiliza mejor el script `cron-autohat.sh`, por ejemplo así:
 
-`0 8 * * *  /rutacompleta/cron-autohat.sh`
+`0 8 * * 1-5  /rutacompleta/cron-autohat.sh`
 
 y añade el usuario y contraseña en el archivo `config.ini`.
 
