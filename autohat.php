@@ -46,7 +46,7 @@ function autohat() {
     $headless = $getOpt['headless'];
     
     if ($user == NULL or $password == NULL) {
-       $config = parse_ini_file('config.ini');
+       $config = parse_ini_file( __DIR__ . '/config.ini');
        $user = $config['user'];
        $password = $config['password'];
     }
