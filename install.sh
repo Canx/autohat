@@ -1,6 +1,6 @@
 # 0. Install php
 sudo apt-get update
-sudo apt-get -y install php7.0-cli php7.0-curl php7.0-zip php7.0-mbstring
+sudo apt-get -y install php7.1-cli php7.1-curl php7.1-zip php7.1-mbstring
 
 # 1. Install chrome
 
